@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Работа с картриджами</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        #cartridgeInfo {
+            margin-top: 20px;
+            border: 1px solid #ddd;
+            padding: 10px;
+            position: relative; 
+        }
+
+        #cartridgeInfo p {
+            margin: 5px 0;
+        }
+
+        .disposed-label {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: red;
+            color: white;
+            padding: 5px;
+            font-weight: bold;
+        }
+
+        .modal {
+            display: none; 
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); 
+            z-index: 1000; 
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%; 
+            max-width: 600px; 
+            text-align: left;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .close-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+            font-size: 24px;
+            color: #666;
+        }
+
+        .close-button:hover {
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .form-group textarea {
+            height: 100px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .info-label {
+            font-weight: bold;
+            color: #555;
+        }
+
+        .info-value {
+            color: #333;
+        }
+
+        .btn-refill {
+            padding: 10px 20px;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .action-panel {
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background-color: #f9f9f9; 
+            margin-top: 20px; 
+        }
+
+        .back-button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease; 
+        }
+
+        .back-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" style="height: 600px;">
+        <div class="d-flex justify-content-between mb-3">
+            <a href="/" class="back-button">
+                <i class="fas fa-arrow-left"></i> Вернуться на главную страницу
+            </a>
+            {% if cartridge_entry %}
+                <button type="button" class="btn btn-secondary" onclick="window.location.href='/cartridge_edit?barcode={{ cartridge_entry.barCode }}'">
+                    <i class="fas fa-edit"></i> Изменить информацию о картридже
+                </button>
+            {% endif %}
+        </div>
+
+        <h1>Работа с картриджами</h1>
+
+        <form method="post" class="mb-3">
+            <div class="input-group">
+                <input type="text" id="barcode" name="barcode" class="form-control" placeholder="Введите штрихкод" required>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-search"></i> Поиск
+                </button>
+            </div>
+        </form>
+
+        {% if message %}
+            <div class="alert alert-danger">{{ message }}</div>
+        {% endif %}
+
+        {% if cartridge_entry %}
+            <div class="row align-items-start h-100">
+                <div class="col-md-6">
+                    <div id="cartridgeInfo" class="card p-3 h-100">
+                        <!-- Метка "СПИСАН", если картридж списан -->
+                        {% if cartridge_entry.status_id == 4 %}
+                            <div class="disposed-label">СПИСАН</div>
+                        {% endif %}
+
+                        <h2>Информация о картридже:</h2>
+                        <table class="table table-striped">
+                            <tbody>
+                                <tr>
+                                    <th>Штрих-код:</th>
+                                    <td>{{ cartridge_entry.barCode }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Модель картриджа:</th>
+                                    <td>{{ cartridge.model.name }} ({{cartridge.manufacturer.name}})</td>
+                                </tr>
+                                <tr>
+                                    <th>Описание:</th>
+                                    <td>{{ cartridge_entry.description }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Дата ввода:</th>
+                                    <td>{{ cartridge_entry.date_in }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Отделение:</th>
+                                    <td>{{ department_info }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Статус:</th>
+                                    <td>
+                                        {% if cartridge_entry.status_id == 3 %}В работе
+                                        {% elif cartridge_entry.status_id == 4 %}Списан
+                                        {% elif cartridge_entry.status_id == 5 %}На складе
+                                        {% else %}Неизвестно{% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Service ID:</th>
+                                    <td>{{ service_id }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        {% if service %}
+                            <p>
+                                {% if service.date_get %}Отдан сотруднику
+                                {% elif service.date_recieve %}Получен из СЦ и ждёт сотрудника для отдачи
+                                {% elif service.date_out %}Передан в СЦ
+                                {% else %}<strong>Статус:</strong> Ждёт отправку в СЦ{% endif %}
+                            </p>
+                        {% else %}
+                            <p>Нет данных</p>
+                        {% endif %}
+
+                        <!-- Вывод последних дат без возможности изменения -->
+                        <div>
+                            <input type="hidden" name="barCode" value="{{ cartridge_entry.barCode }}">
+
+                            <div class="info-row">
+                                <span class="info-label">Дата сдачи в отдел:</span>
+                                <span class="info-value">
+                                    {% if service and service.date_in %}
+                                        {{ service.date_in.strftime('%d.%m.%Y') }}
+                                    {% else %}
+                                        Нет данных
+                                    {% endif %}
+                                </span>
+                            </div>
+                            
+                            <div class="info-row">
+                                <span class="info-label">Причина отправки в СЦ:</span>
+                                <span class="info-value">{{ act.name if act else 'Нет данных' }}</span>
+                            </div>
+                            
+                            <div class="info-row">
+                                <span class="info-label">Дата отправки в СЦ:</span>
+                                <span class="info-value">
+                                    {% if service and service.date_out %}
+                                        {{ service.date_out.strftime('%d.%m.%Y') }}
+                                    {% else %}
+                                        Нет данных
+                                    {% endif %}
+                                </span>
+                            </div>
+                            
+                            <div class="info-row">
+                                <span class="info-label">Вес при отправке:</span>
+                                <span class="info-value">{{ service.weight_out if service else 'Нет данных' }}</span>
+                            </div>
+                            
+                            <div class="info-row">
+                                <span class="info-label">Дата получения из СЦ:</span>
+                                <span class="info-value">
+                                    {% if service and service.date_recieve %}
+                                        {{ service.date_recieve.strftime('%d.%m.%Y') }}
+                                    {% else %}
+                                        Нет данных
+                                    {% endif %}
+                                </span>
+                            </div>
+                            
+                            <div class="info-row">
+                                <span class="info-label">Вес при получении:</span>
+                                <span class="info-value">{{ service.weight_in if service else 'Нет данных' }}</span>
+                            </div>
+                            
+                            <div class="info-row">
+                                <span class="info-label">Дата выдачи сотруднику:</span>
+                                <span class="info-value">
+                                    {% if service and service.date_get %}
+                                        {{ service.date_get.strftime('%d.%m.%Y') }}
+                                    {% else %}
+                                        Нет данных
+                                    {% endif %}
+                                </span>
+                            </div>
+                            
+                            <div class="info-row">
+                                <span class="info-label">Кто забрал:</span>
+                                <span class="info-value">{{ service.who_get if service else 'Нет данных' }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="action-panel h-100">
+                        <h3>Действия</h3>
+                        <!-- Остальные действия и формы -->
+                        {% if service and service.date_out and service.date_recieve and service.date_get and service.weight_in and service.weight_out and service.who_get and service.act_id and not new_service_exists %}
+                            <form method="post" action="/update_cartridge_info" style="margin-top: 15px;">
+                                <input type="hidden" name="barCode" value="{{ cartridge_entry.barCode }}">
+                                <input type="hidden" name="send_to_refill" value="true">
+                                <button type="submit" class="btn btn-success btn-refill">
+                                    <i class="fas fa-arrow-up"></i> Отправить на заправку
+                                </button>
+                            </form>
+                        {% endif %}
+
+                        <!-- Кнопка для получения из СЦ -->
+                        {% if service and service.date_in and service.date_out and service.weight_out and service.act_id and not service.date_recieve %}
+                            <form method="post" action="/update_cartridge_info" style="margin-top: 15px;">
+                                <input type="hidden" name="barCode" value="{{ cartridge_entry.barCode }}">
+                                <input type="hidden" name="recieve_from_service" value="true">
+                                
+                                <!-- Вес при получении из СЦ -->
+                                <div class="form-group">
+                                    <label><strong>Вес при получении из СЦ:</strong></label>
+                                    <input type="number" step="0.01" id="weight_in" name="weight_in" class="form-control" value="{{ service.weight_in if service else '' }}" required>
+                                </div>
+
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-check"></i> Получить из СЦ
+                                </button>
+                            </form>
+                        {% endif %}
+
+                        <!-- Кнопка для выдачи сотруднику -->
+                        {% if service and service.date_in and service.date_out and service.date_recieve and service.weight_in and service.weight_out and service.act_id %}
+                            {% if service.date_get and service.who_get %}
+                            {% else %}
+                                <form method="post" action="/update_cartridge_info" style="margin-top: 15px;">
+                                    <input type="hidden" name="barCode" value="{{ cartridge_entry.barCode }}">
+                                    <input type="hidden" name="give_to_employee" value="true">
+                                    
+                                    <!-- Дата выдачи сотруднику -->
+                                    <div class="form-group">
+                                        <label><strong>Дата выдачи сотруднику:</strong></label>
+                                        <input type="datetime-local" id="date_get" name="date_get" class="form-control" value="{{ service.date_get|string if service and service.date_get else '' }}" required>
+                                    </div>
+
+                                    <!-- Кто забрал -->
+                                    <div class="form-group">
+                                        <label><strong>Кто забрал:</strong></label>
+                                        <input type="text" id="who_get" name="who_get" class="form-control" value="{{ service.who_get if service else '' }}" required>
+                                    </div>
+
+                                    <button type="submit" class="btn btn-info text-white">
+                                        <i class="fas fa-user-check"></i> Выдать сотруднику
+                                    </button>
+                                </form>
+                            {% endif %}
+                        {% endif %}
+
+                        <!-- Кнопка для отправки в СЦ -->
+                        {% if service and not service.weight_out and not service.act_id %}
+                            <form method="post" action="/update_cartridge_info" style="margin-top: 15px;">
+                                <input type="hidden" name="barCode" value="{{ cartridge_entry.barCode }}">
+                                <input type="hidden" name="send_to_service" value="true">
+
+                                <!-- Вес при отправке в СЦ -->
+                                <div class="form-group">
+                                    <label><strong>Вес при отправке в СЦ:</strong></label>
+                                    <input type="number" step="0.01" id="weight_out" name="weight_out" class="form-control" value="{{ service.weight_out if service else '' }}" required>
+                                </div>
+
+                                <!-- Причина отправки в СЦ -->
+                                <div class="form-group">
+                                    <label><strong>Причина отправки в СЦ:</strong></label>
+                                    <select id="act_id" name="act_id" class="form-select" required>
+                                        {% for act in acts %}
+                                            <option value="{{ act.act_id }}">{{ act.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+
+                                <button type="submit" class="btn btn-warning">
+                                    <i class="fas fa-arrow-right"></i> Отправить в СЦ
+                                </button>
+                            </form>
+                        {% endif %}
+
+                        {% if not service %}
+                        <form method="post" action="/update_cartridge_info" style="margin-top: 15px;">
+                            <input type="hidden" name="barCode" value="{{ cartridge_entry.barCode }}">
+                            <input type="hidden" name="create_first_service" value="true">
+                        
+                            <!-- Вес при получении -->
+                            <div class="form-group">
+                                <strong>Вес при получении:</strong>
+                                <input type="number" step="0.01" id="weight_in" name="weight_in" class="form-control" required>
+                            </div>
+                        
+                            <!-- Кто забрал -->
+                            <div class="form-group">
+                                <strong>Кто забрал:</strong>
+                                <input type="text" id="who_get" name="who_get" class="form-control" required>
+                            </div>
+                        
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-plus"></i> Создать первую запись
+                            </button>
+                        </form>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

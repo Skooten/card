@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Картриджи отделений</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .disposed {
+            background-color: #f2dede;
+            color: #a94442;
+        }
+        .cartridge-row {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .cartridge-row:hover {
+            background-color: #f5f5f5;
+            transform: translateX(5px);
+        }
+        .search-container {
+            position: relative;
+            max-width: 500px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Картриджи отделений</h1>
+        
+        <form method="GET">
+            <div class="search-container">
+                <label for="department_search">Поиск отделения:</label>
+                <input type="text" 
+                       id="department_search" 
+                       name="department_name" 
+                       class="form-control" 
+                       placeholder="Начните вводить название..."
+                       list="departmentsList"
+                       autocomplete="off">
+                
+                <datalist id="departmentsList">
+                    {% for department in departments %}
+                        <option value="{{ department.department.name }}" 
+                                data-id="{{ department.builddep_id }}">
+                            {{ department.building.name }} - {{ department.department.name }}
+                        </option>
+                    {% endfor %}
+                </datalist>
+            </div>
+            <button type="submit" class="btn btn-primary mt-2">Показать</button>
+        </form>
+        
+        {% if selected_department %}
+            <h2>{{ selected_department }}</h2>
+            <div class="row">
+                <div class="col-md-8">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Штрихкод</th>
+                                <th>Название картриджа</th>
+                                <th>Описание</th>
+                                <th>Статус</th>
+                                <th>Местонахождение</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for cartridge in cartridges %}
+                                {% if cartridge.status == 'Списан' %}
+                                    <tr class="disposed cartridge-row" onclick="window.location.href='/cartridges?barcode={{ cartridge.barCode }}'">
+                                {% else %}
+                                    <tr class="cartridge-row" onclick="window.location.href='/cartridges?barcode={{ cartridge.barCode }}'">
+                                {% endif %}
+                                    <td>{{ cartridge.barCode }}</td>
+                                    <td>{{ cartridge.cartridge_name }}</td>
+                                    <td>{{ cartridge.description }}</td>
+                                    <td>{{ cartridge.status }}</td>
+                                    <td>{{ cartridge.location }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Действия</h5>
+                            <button type="button" class="btn btn-secondary" onclick="window.location.href='/cartridges'">
+                                Забрать картридж
+                            </button>
+                            <button type="button" class="btn btn-link" onclick="window.location.href='/'">
+                                Перейти на главную страницу
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('department_search');
+        const datalist = document.getElementById('departmentsList');
+        
+        searchInput.addEventListener('input', function(e) {
+            const hiddenInput = document.createElement('input');
+            hiddenInput.type = 'hidden';
+            hiddenInput.name = 'department_id';
+            hiddenInput.value = '';
+            
+            const option = Array.from(datalist.options).find(
+                opt => opt.value === e.target.value
+            );
+            
+            if (option) {
+                hiddenInput.value = option.getAttribute('data-id');
+            }
+            
+            if (!document.getElementById('hidden_department_id')) {
+                hiddenInput.id = 'hidden_department_id';
+                e.target.parentNode.appendChild(hiddenInput);
+            } else {
+                document.getElementById('hidden_department_id').value = hiddenInput.value;
+            }
+        });
+    });
+    </script>
+</body>
+</html>

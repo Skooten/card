@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Сервис</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 50px;
+            background-color: #f8f9fa; /* Светлый фон */
+        }
+
+        .title {
+            margin-bottom: 50px;
+            align-self: center; /* Выровнять по вертикали */
+            margin-left: 100px; /* Сдвинуть вправо на 50 пикселей */
+        }   
+        .btn-custom {
+            padding: 15px 30px;
+            font-size: 20px; /* Увеличенный размер шрифта */
+            margin: 10px;
+            border-radius: 10px; /* Закругленные углы */
+            transition: background-color 0.3s ease; /* Плавный переход цвета */
+            width: 350px; /* Ширина кнопки */
+            height: 80px; /* Высота кнопки */
+            display: flex; /* Выравнивание содержимого */
+            justify-content: center; /* Выравнивание содержимого по горизонтали */
+            align-items: center; /* Выравнивание содержимого по вертикали */
+        }
+        .btn-custom i {
+            margin-right: 10px; /* Расстояние между иконкой и текстом */
+            font-size: 25px; /* Размер иконки */
+        }
+        .btn-primary {
+            background-color: #007bff; /* Синий цвет */
+            color: white;
+        }
+        .btn-success {
+            background-color: #28a745; /* Зеленый цвет */
+            color: white;
+        }
+        .btn-info {
+            background-color: #17a2b8; /* Голубой цвет */
+            color: white;
+        }
+        .btn-warning {
+            background-color: #ffc107; /* Желтый цвет */
+            color: black;
+        }
+        .btn-danger {
+            background-color: #dc3545; /* Красный цвет */
+            color: white;
+        }
+        .btn-primary:hover,
+        .btn-success:hover,
+        .btn-info:hover,
+        .btn-warning:hover,
+        .btn-danger:hover {
+            opacity: 0.8; /* Эффект затемнения при наведении */
+        }
+        .return-link {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            display: inline-block; /* Чтобы можно было задать ширину и высоту */
+            text-decoration: none; /* Убрать подчеркивание ссылки */
+        }
+        .return-link:hover {
+            background-color: #0056b3;
+        }
+        .title {
+            margin-bottom: 50px;
+            align-self: center; /* Выровнять по вертикали */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/" class="return-link">
+            <i class="fas fa-arrow-left"></i> Вернуться на главную страницу
+        </a>
+
+        <div class="row">
+            <div class="col-md-4"></div>
+            <div class="col-md-4">
+                <h1 class="title">Сервис</h1>
+            </div>
+            <div class="col-md-4"></div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4">
+                
+                <button onclick="location.href='/service/spis'" class="btn btn-danger btn-custom">
+                    <i class="fas fa-chart-line"></i> Списанные катриджи
+                </button>
+                <button onclick="location.href='/service/used_in_warehouse'" class="btn btn-info btn-custom">
+                    <i class="fas fa-box"></i> Картриджи на складе Б/У
+                </button>
+            </div>
+            <div class="col-md-4">
+                <button onclick="location.href='/service/storage_all'" class="btn btn-success btn-custom">
+                    <i class="fas fa-list-alt"></i> Все картриджи
+                </button>
+                <button onclick="location.href='/service/cartridge_v_sc'" class="btn btn-info btn-custom">
+                    <i class="fas fa-cog"></i> Картриджи в СЦ
+                </button>
+                <button onclick="location.href='/service/arrived_today'" class="btn btn-success btn-custom">
+                    <i class="fas fa-truck"></i> Картриджи приехали сегодня
+                </button>
+            </div>
+            <div class="col-md-4">
+                <button onclick="location.href='/send_to_sc'" class="btn btn-warning btn-custom">
+                    <i class="fas fa-truck"></i> Отправить в СЦ
+                </button>
+                <button onclick="location.href='/create_cartridge'" class="btn btn-primary btn-custom">
+                    <i class="fas fa-plus-circle"></i> Создать картридж
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

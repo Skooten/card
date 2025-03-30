@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Картриджи в СЦ</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f0f0f0;
+        }
+
+        .back-button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .back-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="mb-3">Картриджи в СЦ</h1>
+
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Штрихкод</th>
+                    <th>Дата сдачи</th>
+                    <th>Вес при отправке</th>
+                    <th>Причина отправки</th>
+                    <th>Дата отправки</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for cartridge in cartridges %}
+                    <tr>
+                        <td>{{ cartridge.barCode }}</td>
+                        <td>{{ cartridge.date_in }}</td>
+                        <td>{{ cartridge.weight_out }}</td>
+                         <td>
+                            {% if cartridge.act_id == 1 %}
+                                Заправка
+                            {% elif cartridge.act_id == 2 %}
+                                Ремонт
+                            {% elif cartridge.act_id == 3 %}
+                                Чистка
+                            {% elif cartridge.act_id == 4 %}
+                                Замена чипа
+                            {% elif cartridge.act_id == 5 %}
+                                Заглушка
+                            {% elif cartridge.act_id == 6 %}
+                                Заправка + ремонт
+                            {% elif cartridge.act_id == 7 %}
+                                Чистка + заправка
+                            {% else %}
+                                Неизвестно
+                            {% endif %}
+                        </td>
+                        <td>{{ cartridge.date_out }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <a href="/service" class="back-button">
+            <i class="fas fa-arrow-left"></i> Вернуться в сервис
+        </a>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</body>
+</html>

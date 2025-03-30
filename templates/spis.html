@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Списанные картриджи</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        .cartridge-row {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .cartridge-row:hover {
+            background-color: #f5f5f5;
+        }
+        .search-container {
+            position: relative;
+            max-width: 500px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <button type="button" class="btn btn-secondary" onclick="window.location.href='/service'">
+            Вернуться в сервис
+        </button>
+
+        <h1>Списанные картриджи</h1>
+
+        <div class="search-container">
+            <form method="GET">
+                <input type="text" 
+                       id="cartridge_search" 
+                       name="barcode" 
+                       class="form-control" 
+                       placeholder="Введите штрихкод или часть названия...">
+                <button type="submit" class="btn btn-primary mt-2">Найти</button>
+            </form>
+        </div>
+
+        {% if cartridges %}
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Штрихкод</th>
+                        <th>Отдел</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cartridge in cartridges %}
+                        <tr class="cartridge-row" onclick="window.location.href='/cartridges?barcode={{ cartridge.barCode }}'">
+                            <td>{{ cartridge.barCode }}</td>
+                            <td>{{ cartridge.building_department.department.name }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>Картриджи не найдены.</p>
+        {% endif %}
+    </div>
+</body>
+</html>
