@@ -819,12 +819,11 @@ def used_in_warehouse():
     finally:
         db.close()
 
-if __name__ == "__main__":
-    app.run(debug=True)
+
 def check_cartridge_id(db, cartridge_id):
     existing_cartridge = db.query(Cartridge).filter(Cartridge.cartridge_id == cartridge_id).first()
     return existing_cartridge is not None
 
 if __name__ == '__main__':
     Base.metadata.create_all(engine)
-    app.run(debug=True)
+    app.run(debug=False)

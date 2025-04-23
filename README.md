@@ -1,5 +1,15 @@
 # Добавление пакетов
 
+
+```sh
+git clone git@github.com:Skooten/card.git
+
+cd card
+uv venv
+. ./.venv/bin/activate
+uv sync
+```
+
 ## Установка пакетов
 
 ```

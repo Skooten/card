@@ -8,7 +8,7 @@ services:
       POSTGRES_DB: postgres_db
       PGDATA: /var/lib/postgresql/data/pgdata
     ports:
-      - "5430:5432"
+      - "5555:5432"
     volumes:
       - ./pgdata:/var/lib/postgresql/data/pgdata
     deploy:
@@ -35,6 +35,11 @@ services:
     restart: unless-stopped
     tty: true
     stdin_open: true
+
+  adminer_host:
+    image: adminer
+    ports:
+      - "38080:8080"
 
 volumes:
   pgdata:
