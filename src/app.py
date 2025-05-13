@@ -17,7 +17,7 @@ app = Flask(__name__)
 CORS(app)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-logging.basicConfig(filename='app.log', level=logging.INFO)
+logging.basicConfig(filename='log/app.log', level=logging.INFO)
 
 @app.route('/')
 def index():

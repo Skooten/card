@@ -1,10 +1,13 @@
 <!DOCTYPE html>
 <html lang="ru">
+
 <head>
     <meta charset="UTF-8">
     <title>Отправка в СЦ</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+        integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -17,7 +20,8 @@
             margin-top: 20px;
         }
 
-        th, td {
+        th,
+        td {
             border: 1px solid #ddd;
             padding: 10px;
             text-align: left;
@@ -35,7 +39,8 @@
             border-radius: 5px;
             cursor: pointer;
             transition: background-color 0.3s ease;
-            margin-bottom: 10px; /* Отступ снизу */
+            margin-bottom: 10px;
+            /* Отступ снизу */
             display: inline-block;
         }
 
@@ -46,8 +51,10 @@
         .submit-button {
             background-color: #007bff;
             color: white;
-            padding: 15px 30px; /* Увеличен размер кнопки */
-            font-size: 1.2em; /* Увеличен размер шрифта */
+            padding: 15px 30px;
+            /* Увеличен размер кнопки */
+            font-size: 1.2em;
+            /* Увеличен размер шрифта */
             border: none;
             border-radius: 5px;
             cursor: pointer;
@@ -59,20 +66,23 @@
         }
 
         .checkbox-column {
-            text-align: center; /* Выравнивание по центру */
+            text-align: center;
+            /* Выравнивание по центру */
         }
 
         .top-buttons {
-            margin-bottom: 20px; /* Отступ между кнопками и заголовком */
+            margin-bottom: 20px;
+            /* Отступ между кнопками и заголовком */
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <div class="top-buttons">
-            <a href="/service" class="back-button">
-                <i class="fas fa-arrow-left"></i> Вернуться в сервис
-            </a>
+            <button type="button" class="btn btn-secondary" onclick="window.location.href='/service'">
+                Вернуться в сервис
+            </button>
         </div>
 
         <h1 class="mb-3">Отправка картриджей в СЦ</h1>
@@ -89,14 +99,14 @@
                 </thead>
                 <tbody>
                     {% for cartridge in cartridges %}
-                        <tr>
-                            <td>{{ cartridge.cartridge.barCode }}</td>
-                            <td>{{ cartridge.building }} - {{ cartridge.department }}</td>
-                            <td>{{ cartridge.service.date_in }}</td>
-                            <td class="checkbox-column">
-                                <input type="checkbox" name="barcodes[]" value="{{ cartridge.cartridge.barCode }}">
-                            </td>
-                        </tr>
+                    <tr>
+                        <td>{{ cartridge.cartridge.barCode }}</td>
+                        <td>{{ cartridge.building }} - {{ cartridge.department }}</td>
+                        <td>{{ cartridge.service.date_in }}</td>
+                        <td class="checkbox-column">
+                            <input type="checkbox" name="barcodes[]" value="{{ cartridge.cartridge.barCode }}">
+                        </td>
+                    </tr>
                     {% endfor %}
                 </tbody>
             </table>
@@ -108,6 +118,9 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"
+        integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </body>
+
 </html>
