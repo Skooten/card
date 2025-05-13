@@ -8,7 +8,7 @@
 
 Установка:
 
-```sh
+```bash
 # клонируем репозиторий проекта
 git clone git@github.com:Skooten/card.git
 
