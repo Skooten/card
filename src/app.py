@@ -826,4 +826,5 @@ def check_cartridge_id(db, cartridge_id):
 
 if __name__ == '__main__':
     Base.metadata.create_all(engine)
+    print("open http://127.0.0.1:5000/")
     app.run(debug=False)
